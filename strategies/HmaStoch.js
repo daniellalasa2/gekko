@@ -8,7 +8,7 @@ strat.init = function() {
   this.requiredHistory = this.tradingAdvisor.historySize;
   this.addTulipIndicator('Hma9', 'hma', { optInTimePeriod: 9 });
   this.addTulipIndicator('Hma25', 'hma', { optInTimePeriod: 25 });
-  this.addIndicator('Stoch', 'stoch', {
+  this.addTulipIndicator('Stoch', 'stoch', {
     optInFastKPeriod: 14, //%K
     optInSlowDPeriod: 5, //%D
     optInSlowKPeriod: 3, //Smooth%K
