@@ -13,9 +13,9 @@ const CONFIG = {
   },
   ui: {
     ssl: false,
-    host: 'localhost',
+    host: '136.243.224.206',
     port: 3000,
-    path: '/'
+    path: '/gekko'
   },
   adapter: 'sqlite'
 }

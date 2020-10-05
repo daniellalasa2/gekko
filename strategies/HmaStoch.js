@@ -8,7 +8,7 @@ strat.init = function() {
   this.requiredHistory = this.tradingAdvisor.historySize;
   this.addTulipIndicator('Hma9', 'hma', { optInTimePeriod: 9 });
   this.addTulipIndicator('Hma25', 'hma', { optInTimePeriod: 25 });
-  this.addIndicator('Stoch.K', 's && Stoch.K > toch', {
+  this.addIndicator('Stoch', 'stoch', {
     optInFastKPeriod: 14, //%K
     optInSlowDPeriod: 5, //%D
     optInSlowKPeriod: 3, //Smooth%K
@@ -23,16 +23,16 @@ strat.update = function(candle) {
 };
 
 strat.check = function(candle) {
-  //   if (Hma9 > Hma25 && Stoch.K < 40 && Stoch.K > Stoch.D) {
-  //     this.advice({
-  //       direction: 'long',
-  //       trigger: {
-  //         type: 'trailingStop',
-  //         trailPercentage: 1.5,
-  //         // trailValue: 100
-  //       },
-  //     });
-  //   }
+  if (Hma9 > Hma25 && Stoch.K < 40 && Stoch.K > Stoch.D) {
+    this.advice({
+      direction: 'long',
+      trigger: {
+        type: 'trailingStop',
+        trailPercentage: 1.5,
+        // trailValue: 100
+      },
+    });
+  }
 };
 
 module.exports = strat;
