@@ -6,16 +6,17 @@ strat.init = function() {
   this.name = 'HmaStoch';
   this.takeProfit = 1.3 / 100;
   this.requiredHistory = this.tradingAdvisor.historySize;
-  this.addTulipIndicator('Hma9', 'hma', { optInTimePeriod: 9 });
-  this.addTulipIndicator('Hma25', 'hma', { optInTimePeriod: 25 });
-  this.addTulipIndicator('Stoch', 'stoch', {
+  this.addTulipIndicator('hma9', 'hma', { optInTimePeriod: 9 });
+  this.addTulipIndicator('hma25', 'hma', { optInTimePeriod: 25 });
+  this.addTulipIndicator('stoch1453', 'stoch', {
     optInFastKPeriod: 14, //%K
     optInSlowDPeriod: 5, //%D
     optInSlowKPeriod: 3, //Smooth%K
   });
+  this.history = [];
 };
 strat.log = function(candle) {
-  log.debug('\t', 'ind:', this.indicators);
+  // log.debug('\t', 'ind:', this.tulipIndicators);
 };
 strat.update = function(candle) {
   //   this.indicators.highperiod.update(candle.high);
@@ -23,15 +24,32 @@ strat.update = function(candle) {
 };
 
 strat.check = function(candle) {
-  if (Hma9 > Hma25 && Stoch.K < 40 && Stoch.K > Stoch.D) {
-    this.advice({
-      direction: 'long',
-      trigger: {
-        type: 'trailingStop',
-        trailPercentage: 1.5,
-        // trailValue: 100
-      },
-    });
+  var hma9 = this.tulipIndicators.hma9.result.result;
+  var hma25 = this.tulipIndicators.hma25.result.result;
+  var stochK = this.tulipIndicators.stoch1453.result.stochK;
+  var stochD = this.tulipIndicators.stoch1453.result.stochD;
+  if (stochK && stochD) {
+    log.debug('\t', 'history', this.history[0], 'now', stochK, stochD);
+    if (
+      stochK > stochD &&
+      this.history[0].stochK <= this.history[0].stochD &&
+      hma9 > hma25 &&
+      this.history[1].hma9 <= this.history[1].hma25 &&
+      stochK < 25
+    ) {
+      this.history = [];
+      // this.advice('long');
+      this.advice({
+        direction: 'long',
+        trigger: {
+          type: 'trailingStop',
+          trailPercentage: 3,
+          // trailValue: 100
+        },
+      });
+    }
+    this.history[0] = this.tulipIndicators.stoch1453.result;
+    this.history[1] = { hma9: hma9, hma25: hma25 };
   }
 };
 
